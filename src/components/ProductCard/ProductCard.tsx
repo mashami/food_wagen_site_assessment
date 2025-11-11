@@ -13,7 +13,7 @@ import {
 import { DeleteProductDialog, EditProductDialog } from "../Dialogs";
 
 interface ProductCardProps {
-  id?: string;
+  id: string;
   Price: string;
   food_name: string;
   food_image: string;
@@ -125,6 +125,7 @@ function ProductCard({
       />
 
       <DeleteProductDialog
+        id={id}
         deleteProductDialoagOpen={deletOpen}
         setDeleteProductDialoagOpen={setDeleteOpen}
       />
