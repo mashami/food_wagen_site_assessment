@@ -7,9 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList
 } from "@/components/ui/command";
@@ -67,12 +65,13 @@ export function ComboboxDemo() {
           </svg>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command className="w-full bg-red-500">
-          <CommandList className="w-full">
-            <CommandGroup className="w-full">
+      <PopoverContent className="md:w-[445px] w-full bg-white rounded-xl overflow-hidden">
+        <Command className="">
+          <CommandList className="">
+            <CommandGroup className="">
               {frameworks.map((framework) => (
                 <CommandItem
+                  className="w-full border-b border-black/30 py-3"
                   key={framework.value}
                   value={framework.value}
                   onSelect={(currentValue) => {

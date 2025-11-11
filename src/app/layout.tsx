@@ -4,6 +4,7 @@ import "/src/styles/globals.scss";
 import { Source_Sans_3 } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import { AppContextProvider } from "@/context/AppContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,7 +37,9 @@ export default function RootLayout({
       <body
         className={cn(`${source_Sans_3.variable} font-source_san antialiased`)}
       >
-        <div>{children}</div>
+        <div>
+          <AppContextProvider>{children}</AppContextProvider>
+        </div>
 
         <Toaster />
       </body>

@@ -79,7 +79,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           >
             <p
               className={cn(
-                "text-[18px] font-semibold leading-5",
+                "text-[15px] font-semibold leading-5",
                 !svg && "px-2"
               )}
             >
