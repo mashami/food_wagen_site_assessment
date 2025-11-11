@@ -1,21 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 interface TextInputProps {
   label?: string;
   placeholder?: string;
   name: string;
   required?: boolean;
+  value?: string;
+  setValue: Dispatch<SetStateAction<string>>;
 }
 
 export default function TextInput({
   label,
   placeholder = "",
   name,
-  required = false
+  required = false,
+  value = "",
+  setValue
 }: TextInputProps) {
-  const [value, setValue] = useState("");
   const [touched, setTouched] = useState(false);
 
   const error = required && touched && !value.trim();

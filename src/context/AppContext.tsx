@@ -2,11 +2,19 @@
 
 import { toast } from "@/components/ui/use-toast";
 import { ProductTypes } from "@/utils/types";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 
 interface AppContextData {
   products: ProductTypes[] | [];
   isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
   // resetUser: () => void
 }
 
@@ -68,6 +76,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
   const value: AppContextData = {
     isLoading,
+    setIsLoading,
     products
   };
 

@@ -7,19 +7,53 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import React, { Dispatch, SetStateAction } from "react";
-import { TextInput } from "../TextInput";
-import { ComboboxDemo } from "../Combobox/Combobox";
 import { Button } from "../ui/button";
+import { deleteProduct } from "@/services/products";
+import { toast } from "../ui/use-toast";
+import { useAppContext } from "@/context/AppContext";
 
 interface DeleteProductDialogProps {
+  id: string;
   setDeleteProductDialoagOpen: Dispatch<SetStateAction<boolean>>;
   deleteProductDialoagOpen: boolean;
 }
 
 const DeleteProductDialog = ({
   setDeleteProductDialoagOpen,
+  id,
   deleteProductDialoagOpen
 }: DeleteProductDialogProps) => {
+  const { isLoading, setIsLoading } = useAppContext();
+
+  const handleDelete = async (id: string) => {
+    setIsLoading(true);
+
+    try {
+      const result = await deleteProduct(id);
+      if (!result.ok) {
+        toast({
+          variant: "destructive",
+          description: result.message || "Failed to add product"
+        });
+        setIsLoading(false);
+        return;
+      }
+      toast({
+        variant: "default",
+        description: result.message || "Delete successfully"
+      });
+      setIsLoading(false);
+      return;
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "An unexpected error occurred"
+      });
+      setIsLoading(false);
+      return;
+    }
+  };
+
   return (
     <Dialog
       onOpenChange={setDeleteProductDialoagOpen}
@@ -39,7 +73,7 @@ const DeleteProductDialog = ({
             </p>
             <div className="flex md:flex-row justify-between gap-2 w-full">
               <Button
-                text="Yes"
+                text={isLoading ? "Deleting...." : "Yes"}
                 className="text-white rounded-[12px] w-full py-6"
                 style={{
                   background:
@@ -47,6 +81,7 @@ const DeleteProductDialog = ({
                   boxShadow:
                     "0px 20px 40px 0px #FFAE004A, 0px 5px 10px 0px #FFAE0042"
                 }}
+                onClick={() => handleDelete(id)}
               />
 
               <Button

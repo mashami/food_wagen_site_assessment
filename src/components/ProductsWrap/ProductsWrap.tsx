@@ -37,6 +37,7 @@ function ProductsWrapContent() {
         {visibleProducts?.map((product) => (
           <ProductCard
             key={product.id}
+            id={product.id}
             Price={product.Price}
             food_image={product.image}
             food_rating={product.rating}
