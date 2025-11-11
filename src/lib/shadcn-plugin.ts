@@ -67,10 +67,7 @@ export const shadcnPlugin = plugin(
 
       extend: {
         fontFamily: {
-          // ibm_plex_mono: [`var(--font-ibm-plex-mono)`],
-          bricolage: [`var(--font-bricolage-grotesque)`],
-          // lexend: [`var(--font-lexend-Deca)`]
-          // --font-lexend-Deca
+          source_san: [`var(--font-Source-Sans-pro)`],
         },
 
         scrollbar: {

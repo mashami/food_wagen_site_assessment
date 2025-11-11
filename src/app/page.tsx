@@ -1,10 +1,17 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { Footer } from "@/components/Fooder";
+import { Header } from "@/components/Header";
+import { Hero } from "@/components/Hero";
+import { Navbar } from "@/components/Navbar";
 
 export default function Home() {
   return (
     <div className="">
-      <Button text="Hello" variant={"outline"} className="bg-red-500" />
+      <Navbar />
+      <Header />
+      <Hero />
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 }
