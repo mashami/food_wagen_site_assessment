@@ -20,14 +20,14 @@ const Header = () => {
           <div className=" bg-white space-y-4 rounded-3xl p-6">
             <div className="">
               <div className="flex items-center space-x-3">
-                <button className="flex space-x-3 items-center py-[10px] px-6 bg-[#F172281A] rounded-xl">
+                <button className="flex space-x-3 items-center py-[10px] px-6 bg-[#F172281A] hover:bg-[#F172281A]/40 ease-in-out duration-300 rounded-xl">
                   <MotorIcon />
                   <p className="text-[#F17228] font-medium text-[18px]">
                     Delivery
                   </p>
                 </button>
 
-                <button className="flex space-x-3 items-center py-[10px] px-6 rounded-xl">
+                <button className="flex space-x-3 items-center py-[10px] px-6 rounded-xl hover:bg-black/20 ease-in-out duration-300">
                   <BagIcon />
                   <p className="text-[#757575] font-medium text-[18px]">
                     Pickup
@@ -38,7 +38,7 @@ const Header = () => {
 
             <div className="w-full h-px bg-black/90 opacity-10"></div>
 
-            <div className="flex md:flex-row flex-col md:items-center gap-4 w-full">
+            <form className="flex md:flex-row flex-col md:items-center gap-4 w-full">
               <div className="flex items-center space-x-4 bg-[#F5F5F5] rounded-[8px] py-3 px-4 flex-1">
                 <SearchIcon />
                 <input
@@ -70,7 +70,7 @@ const Header = () => {
                 }}
                 position="left"
               />
-            </div>
+            </form>
           </div>
         </div>
 

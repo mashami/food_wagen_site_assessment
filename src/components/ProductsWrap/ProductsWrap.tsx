@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import { ProductCard } from "../ProductCard";
 import { getAllProducts } from "@/services/products";
 import { ProductTypes } from "@/utils/types";
@@ -8,45 +8,11 @@ import { Loader } from "@/components/Loader";
 import { toast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { useAppContext } from "@/context/AppContext";
 
 function ProductsWrapContent() {
-  const [products, setProducts] = useState<ProductTypes[]>([]);
   const [visibleCount, setVisibleCount] = useState<number>(8);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
-        const response = await fetch(`${baseUrl}/api/getAllProducts`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" }
-        });
-
-        if (!response.ok) {
-          toast({
-            variant: "destructive",
-            description: "Failed to fetch products"
-          });
-          return;
-        }
-
-        const result = await response.json();
-        setProducts(result.data || []);
-      } catch (err) {
-        toast({
-          variant: "destructive",
-          description: `Failed to fetch products: ${err}`
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const { products, isLoading } = useAppContext();
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 8);
@@ -63,12 +29,12 @@ function ProductsWrapContent() {
     );
   }
 
-  const visibleProducts = products.slice(0, visibleCount);
+  const visibleProducts = products?.slice(0, visibleCount);
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-4 gap-y-6 w-full">
-        {visibleProducts.map((product) => (
+      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-4 gap-y-12 w-full">
+        {visibleProducts?.map((product) => (
           <ProductCard
             key={product.id}
             Price={product.Price}
@@ -83,7 +49,7 @@ function ProductsWrapContent() {
         ))}
       </div>
 
-      {visibleCount < products.length ? (
+      {visibleCount < products.length && (
         <div className="flex justify-center mt-16">
           <div className="flex items-center gap-4">
             {visibleCount != 8 && (
@@ -126,7 +92,8 @@ function ProductsWrapContent() {
             />
           </div>
         </div>
-      ) : (
+      )}
+      {products.length > 0 && visibleCount > products.length && (
         <div>
           <div className="flex justify-center mt-16">
             <Button

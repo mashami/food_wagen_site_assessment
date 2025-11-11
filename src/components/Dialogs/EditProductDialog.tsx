@@ -11,24 +11,24 @@ import { TextInput } from "../TextInput";
 import { ComboboxDemo } from "../Combobox/Combobox";
 import { Button } from "../ui/button";
 
-interface AddProductDialogProps {
-  SetaddProductDialoagOpen: Dispatch<SetStateAction<boolean>>;
-  addProductDialoagOpen: boolean;
+interface EditProductDialogProps {
+  setEditProductDialoagOpen: Dispatch<SetStateAction<boolean>>;
+  editProductDialoagOpen: boolean;
 }
 
-const AddProductDialog = ({
-  SetaddProductDialoagOpen,
-  addProductDialoagOpen
-}: AddProductDialogProps) => {
+const EditProductDialog = ({
+  setEditProductDialoagOpen,
+  editProductDialoagOpen
+}: EditProductDialogProps) => {
   return (
     <Dialog
-      onOpenChange={SetaddProductDialoagOpen}
-      open={addProductDialoagOpen}
+      onOpenChange={setEditProductDialoagOpen}
+      open={editProductDialoagOpen}
     >
       <DialogContent className="bg-white px-16 py-12 md:min-w-[574px]">
         <DialogHeader>
           <DialogTitle className="text-[#FF9A0E] text-[40px] font-bold text-center">
-            Add a meal
+            Edit Meal
           </DialogTitle>
 
           {/* <DialogDescription> */}
@@ -36,21 +36,34 @@ const AddProductDialog = ({
             action=""
             className="space-y-6 flex flex-col justify-center items-center"
           >
-            <TextInput name="food_name" placeholder="Food name" required />
-            <TextInput name="food_rating" placeholder="Food rating" required />
+            <TextInput
+              name="food_name"
+              placeholder="Food name"
+              label="Food name"
+              required
+            />
+            <TextInput
+              name="food_rating"
+              placeholder="Food rating"
+              label="Food rating"
+              required
+            />
             <TextInput
               name="food_name"
               placeholder="Food image (link)"
+              label="Food image (link)"
               required
             />
             <TextInput
               name="restaurant_name"
               placeholder="Restaurant name"
+              label="Restaurant name"
               required
             />
             <TextInput
               name="restaurant_logo"
               placeholder="Restaurant logo (link)"
+              label="Restaurant logo (link)"
               required
             />
 
@@ -58,7 +71,7 @@ const AddProductDialog = ({
 
             <div className="flex md:flex-row justify-between gap-2 w-full">
               <Button
-                text="Add"
+                text="Edit"
                 className="text-white rounded-[12px] w-full"
                 style={{
                   background:
@@ -71,8 +84,8 @@ const AddProductDialog = ({
               <Button
                 text="Cancel"
                 variant={"ghost"}
-                className="text-black rounded-[12px] text-[18px] w-full border border-[#FFBA26]"
-                onClick={() => SetaddProductDialoagOpen(false)}
+                className="text-black rounded-[12px] text-[10px] w-full border border-[#FFBA26]"
+                onClick={() => setEditProductDialoagOpen(false)}
               />
             </div>
           </form>
@@ -83,4 +96,4 @@ const AddProductDialog = ({
   );
 };
 
-export default AddProductDialog;
+export default EditProductDialog;
