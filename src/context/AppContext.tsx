@@ -44,8 +44,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setIsLoading(true);
 
     try {
-      // const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
-      const baseUrl = "http://localhost:3000";
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+      // const baseUrl = "http://localhost:3000";
 
       const response = await fetch(`${baseUrl}/api/getAllProducts`, {
         method: "POST",
