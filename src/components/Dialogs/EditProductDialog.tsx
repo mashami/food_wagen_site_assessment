@@ -52,7 +52,7 @@ const EditProductDialog = ({
   const [rating, setRating] = useState<string>(ratings.toString());
   const [restaurantName, setRestaurantName] = useState<string>(restaurant_name);
   const currentYear = new Date().toISOString();
-  const { refleshPageHandle, isLoading, setIsLoading } = useAppContext();
+  const { refetchProducts, isLoading, setIsLoading } = useAppContext();
 
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +111,7 @@ const EditProductDialog = ({
         description: response.message || "Product updated successfully!"
       });
 
-      refleshPageHandle();
+      refetchProducts();
       setEditProductDialoagOpen(false);
     } catch (error) {
       toast({

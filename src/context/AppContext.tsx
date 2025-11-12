@@ -17,7 +17,7 @@ interface AppContextData {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setProducts: Dispatch<SetStateAction<ProductTypes[] | []>>;
-  refleshPageHandle: () => void;
+  refetchProducts: () => void;
 }
 
 const AppContext = createContext<AppContextData | null>(null);
@@ -39,51 +39,52 @@ interface AppContextProviderProps {
 export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [products, setProducts] = useState<ProductTypes[] | []>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
+  const fetchProducts = async () => {
+    setIsLoading(true);
 
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
-        const response = await fetch(`${baseUrl}/api/getAllProducts`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" }
-        });
+    try {
+      // const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+      const baseUrl = "http://localhost:3000";
 
-        if (!response.ok) {
-          toast({
-            variant: "destructive",
-            description: "Failed to fetch products"
-          });
-          return;
-        }
+      const response = await fetch(`${baseUrl}/api/getAllProducts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
 
-        const result = await response.json();
-        setProducts(result.data || []);
-      } catch (err) {
+      if (!response.ok) {
         toast({
           variant: "destructive",
-          description: `Failed to fetch products: ${err}`
+          description: "Failed to fetch products"
         });
-      } finally {
-        setIsLoading(false);
+        return;
       }
-    };
 
+      const result = await response.json();
+      setProducts(result.data || []);
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: `Failed to fetch products: ${err}`
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProducts();
   }, []);
 
-  const refleshPageHandle = () => {
-    router.refresh();
+  const refetchProducts = async () => {
+    await fetchProducts();
   };
 
   // console.log(userInfo)
 
   const value: AppContextData = {
     isLoading,
-    refleshPageHandle,
+    refetchProducts,
     setProducts,
     setIsLoading,
     products

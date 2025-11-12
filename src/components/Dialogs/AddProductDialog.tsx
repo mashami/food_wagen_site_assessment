@@ -50,7 +50,7 @@ const AddProductDialog = ({
   const [selected, setSelected] = useState<"true" | "false" | "">("");
   const [rating, setRating] = useState<string>("");
   const [restaurantName, setRestaurantName] = useState<string>("");
-  const { refleshPageHandle, isLoading, setIsLoading } = useAppContext();
+  const { refetchProducts, isLoading, setIsLoading } = useAppContext();
 
   const createdAt = new Date().toISOString();
 
@@ -112,7 +112,7 @@ const AddProductDialog = ({
       setSelected("");
 
       SetaddProductDialoagOpen(false);
-      refleshPageHandle;
+      refetchProducts();
     } catch (error) {
       toast({
         variant: "destructive",
