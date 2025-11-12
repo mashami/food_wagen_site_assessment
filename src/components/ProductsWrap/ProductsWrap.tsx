@@ -33,22 +33,28 @@ function ProductsWrapContent() {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-4 gap-y-12 w-full">
-        {visibleProducts?.map((product) => (
-          <ProductCard
-            key={product.id}
-            id={product.id}
-            Price={product.Price}
-            food_image={product.image}
-            food_rating={product.rating}
-            food_name={product.name}
-            open={product.open}
-            restaurant_image={product.avatar}
-            restaurant_status={product.status}
-            createdAt={product.createdAt}
-          />
-        ))}
-      </div>
+      {products.length > 0 ? (
+        <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-4 gap-y-12 w-full">
+          {visibleProducts?.map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              Price={product.Price}
+              food_image={product.image}
+              food_rating={product.rating}
+              food_name={product.name}
+              open={product.open}
+              restaurant_image={product.avatar}
+              restaurant_status={product.status}
+              createdAt={product.createdAt}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center justify-center w-full py-5">
+          <p className="font-medium text-[20px]">There is no products yet</p>
+        </div>
+      )}
 
       {visibleCount < products.length && (
         <div className="flex justify-center mt-16">
@@ -94,24 +100,26 @@ function ProductsWrapContent() {
           </div>
         </div>
       )}
-      {products.length > 0 && visibleCount > products.length && (
-        <div>
-          <div className="flex justify-center mt-16">
-            <Button
-              text="Load less"
-              className="text-white rounded-[12px]"
-              position={"left"}
-              style={{
-                background:
-                  "linear-gradient(97.86deg, #FFBA26 -8.95%, #FF9A0E 109.24%)",
-                boxShadow:
-                  "0px 20px 40px 0px #FFAE004A, 0px 5px 10px 0px #FFAE0042"
-              }}
-              onClick={handleLess}
-            />
+      {products.length > 0 &&
+        visibleCount > products.length &&
+        visibleCount > 8 && (
+          <div>
+            <div className="flex justify-center mt-16">
+              <Button
+                text="Load less"
+                className="text-white rounded-[12px]"
+                position={"left"}
+                style={{
+                  background:
+                    "linear-gradient(97.86deg, #FFBA26 -8.95%, #FF9A0E 109.24%)",
+                  boxShadow:
+                    "0px 20px 40px 0px #FFAE004A, 0px 5px 10px 0px #FFAE0042"
+                }}
+                onClick={handleLess}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 }

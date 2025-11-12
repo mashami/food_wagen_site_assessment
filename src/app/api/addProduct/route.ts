@@ -12,18 +12,41 @@ export async function POST(req: Request) {
     name,
     open,
     rating,
+    restaurantName,
   }: ProductTypes = await req.json()
   try {
-    if (!name || !avatar || !createdAt || !logo || !open || !rating) {
+    if (!open) {
       return NextResponse.json(
-        { error: true, message: 'All fields required' },
+        { error: true, message: 'Status is required!!' },
+        { status: HttpStatusCode.BAD_REQUEST },
+      )
+    }
+
+    if (
+      !name ||
+      !avatar ||
+      !createdAt ||
+      !logo ||
+      !open ||
+      !rating ||
+      !restaurantName
+    ) {
+      return NextResponse.json(
+        { error: true, message: 'All fields required!!' },
         { status: HttpStatusCode.BAD_REQUEST },
       )
     }
     const result = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, avatar, createdAt, logo, open }),
+      body: JSON.stringify({
+        name,
+        avatar,
+        createdAt,
+        logo,
+        open,
+        restaurantName,
+      }),
       cache: 'no-store',
     })
 

@@ -8,14 +8,37 @@ import {
 } from "@/components/ui/dialog";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { TextInput } from "../TextInput";
-import { ComboboxDemo } from "../Combobox/Combobox";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
+import { useAppContext } from "@/context/AppContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 interface AddProductDialogProps {
   SetaddProductDialoagOpen: Dispatch<SetStateAction<boolean>>;
   addProductDialoagOpen: boolean;
 }
+
+interface frameworksTypes {
+  value: string;
+  label: string;
+}
+
+export const frameworks: frameworksTypes[] = [
+  {
+    value: "true",
+    label: "Open"
+  },
+  {
+    value: "false",
+    label: "Closed"
+  }
+];
 
 const AddProductDialog = ({
   SetaddProductDialoagOpen,
@@ -24,37 +47,44 @@ const AddProductDialog = ({
   const [name, setName] = useState<string>("");
   const [avatar, setAvatar] = useState<string>("");
   const [logo, setLogo] = useState<string>("");
-  const [open, setOpen] = useState<string>("");
+  const [selected, setSelected] = useState<"true" | "false" | "">("");
   const [rating, setRating] = useState<string>("");
   const [restaurantName, setRestaurantName] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const { refleshPageHandle, isLoading, setIsLoading } = useAppContext();
 
   const createdAt = new Date().toISOString();
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !avatar || !logo || !rating || !restaurantName) {
+    if (!selected) {
       toast({
         variant: "destructive",
-        description: "All fields are required."
+        description: "Please select restaurant status."
       });
       return;
     }
 
-    setLoading(true);
-    const openHandle = open == "open" ? true : false;
+    if (!avatar || !createdAt || !logo || !name || !rating || !restaurantName) {
+      toast({
+        variant: "destructive",
+        description: "All fields are required......"
+      });
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/addProduct", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name,
           avatar,
-          logo,
           createdAt,
-          open: openHandle,
+          logo,
+          name,
+          open: selected,
           rating,
           restaurantName
         })
@@ -79,9 +109,10 @@ const AddProductDialog = ({
       setLogo("");
       setRating("");
       setRestaurantName("");
-      setOpen("");
+      setSelected("");
 
       SetaddProductDialoagOpen(false);
+      refleshPageHandle;
     } catch (error) {
       toast({
         variant: "destructive",
@@ -89,7 +120,7 @@ const AddProductDialog = ({
       });
       console.error("Add product error:", error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -144,13 +175,37 @@ const AddProductDialog = ({
               required
             />
 
-            <ComboboxDemo setValue={setOpen} value={open} />
+            <Select
+              onValueChange={(value: "true" | "false") => {
+                setSelected(value);
+                //   toast({
+                //     variant: "destructive",
+                //     description: value
+                //   });
+              }}
+            >
+              <SelectTrigger className="bg-[#F5F5F5] border w-full px-4 py-6 border-black/10 rounded-[6px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-orange-400 transition">
+                <SelectValue placeholder="Restaurant status (open/close)" />
+              </SelectTrigger>
+
+              <SelectContent className="bg-white space-y-3">
+                {frameworks.map((d) => (
+                  <SelectItem
+                    className="py-2 cursor-pointer"
+                    key={d.value}
+                    value={d.value}
+                  >
+                    {d.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <div className="flex md:flex-row justify-between gap-2 w-full">
               <Button
-                text={loading ? "Adding..." : "Add"}
+                text={isLoading ? "Adding..." : "Add"}
                 type="submit"
-                disabled={loading}
+                disabled={isLoading}
                 className="text-white rounded-[12px] w-full"
                 style={{
                   background:

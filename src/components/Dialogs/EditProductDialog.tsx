@@ -11,31 +11,119 @@ import { TextInput } from "../TextInput";
 import { ComboboxDemo } from "../Combobox/Combobox";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import { frameworks } from "./AddProductDialog";
+import { useAppContext } from "@/context/AppContext";
+import { updateProduct } from "@/services/products";
 
 interface EditProductDialogProps {
   setEditProductDialoagOpen: Dispatch<SetStateAction<boolean>>;
   editProductDialoagOpen: boolean;
+  id: string;
+  name: string;
+  avatar: string;
+  logo: string;
+  open: boolean | string;
+  rating: number;
+  restaurantName: string;
 }
 
 const EditProductDialog = ({
+  id,
   setEditProductDialoagOpen,
-  editProductDialoagOpen
+  editProductDialoagOpen,
+  name: names,
+  avatar: avatars,
+  logo: logos,
+  open: opens,
+  rating: ratings,
+  restaurantName: restaurant_name
 }: EditProductDialogProps) => {
-  const [name, setName] = useState<string>("");
-  const [avatar, setAvatar] = useState<string>("");
-  const [logo, setLogo] = useState<string>("");
-  const [open, setOpen] = useState<string>("");
-  const [rating, setRating] = useState<string>("");
-  const [restaurantName, setRestaurantName] = useState<string>("");
-  const currentYear = new Date();
+  const [name, setName] = useState<string>(names);
+  const [avatar, setAvatar] = useState<string>(avatars);
+  const [logo, setLogo] = useState<string>(logos);
+  const [selected, setSelected] = useState<"true" | "false" | "">("");
+  const [rating, setRating] = useState<string>(ratings.toString());
+  const [restaurantName, setRestaurantName] = useState<string>(restaurant_name);
+  const currentYear = new Date().toISOString();
+  const { refleshPageHandle, isLoading, setIsLoading } = useAppContext();
 
-  const handleEdit = () => {
-    toast({
-      variant: "default",
-      description: "An unexpected error occurred"
-    });
-    setEditProductDialoagOpen(true);
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      if (!selected) {
+        toast({
+          variant: "destructive",
+          description: "Please select restaurant status."
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      if (
+        !avatar ||
+        !currentYear ||
+        !logo ||
+        !name ||
+        !rating ||
+        !restaurantName
+      ) {
+        toast({
+          variant: "destructive",
+          description: "All fields are required."
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const ratingConvert = parseInt(rating);
+
+      const response = await updateProduct({
+        id,
+        avatar,
+        createdAt: currentYear,
+        name,
+        open: selected,
+        rating: ratingConvert,
+        restaurantName,
+        logo
+      });
+
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          description: response.message || "Failed to update product."
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      toast({
+        variant: "default",
+        description: response.message || "Product updated successfully!"
+      });
+
+      refleshPageHandle();
+      setEditProductDialoagOpen(false);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "An unexpected error occurred."
+      });
+      console.error("Update product error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <Dialog
       onOpenChange={setEditProductDialoagOpen}
@@ -50,6 +138,7 @@ const EditProductDialog = ({
           {/* <DialogDescription> */}
           <form
             action=""
+            onSubmit={handleEdit}
             className="space-y-6 flex flex-col justify-center items-center"
           >
             <TextInput
@@ -63,6 +152,7 @@ const EditProductDialog = ({
             <TextInput
               setValue={setRating}
               value={rating}
+              type="number"
               name="food_rating"
               placeholder="Food rating"
               label="Food rating"
@@ -93,11 +183,36 @@ const EditProductDialog = ({
               required
             />
 
-            <ComboboxDemo setValue={setOpen} value={open} />
+            <Select
+              onValueChange={(value: "true" | "false") => {
+                setSelected(value);
+                //   toast({
+                //     variant: "destructive",
+                //     description: value
+                //   });
+              }}
+            >
+              <SelectTrigger className="bg-[#F5F5F5] border w-full px-4 py-6 border-black/10 rounded-[6px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-orange-400 transition">
+                <SelectValue placeholder="Restaurant status (open/close)" />
+              </SelectTrigger>
+
+              <SelectContent className="bg-white space-y-3">
+                {frameworks.map((d) => (
+                  <SelectItem
+                    className="py-2 cursor-pointer"
+                    key={d.value}
+                    value={d.value}
+                  >
+                    {d.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <div className="flex md:flex-row justify-between gap-2 w-full">
               <Button
-                text="Edit"
+                text={isLoading ? "Edit...." : "Edit"}
+                type="submit"
                 className="text-white rounded-[12px] w-full"
                 style={{
                   background:
@@ -105,12 +220,12 @@ const EditProductDialog = ({
                   boxShadow:
                     "0px 20px 40px 0px #FFAE004A, 0px 5px 10px 0px #FFAE0042"
                 }}
-                // onClick={() => handleEdit()}
               />
 
               <Button
                 text="Cancel"
                 variant={"ghost"}
+                type="reset"
                 className="text-black rounded-[12px] text-[10px] w-full border border-[#FFBA26]"
                 onClick={() => setEditProductDialoagOpen(false)}
               />

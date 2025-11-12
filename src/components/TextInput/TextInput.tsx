@@ -7,6 +7,7 @@ interface TextInputProps {
   placeholder?: string;
   name: string;
   required?: boolean;
+  type?: string;
   value?: string;
   setValue: Dispatch<SetStateAction<string>>;
 }
@@ -15,6 +16,7 @@ export default function TextInput({
   label,
   placeholder = "",
   name,
+  type = "text",
   required = false,
   value = "",
   setValue
@@ -36,7 +38,7 @@ export default function TextInput({
       <input
         id={name}
         name={name}
-        type="text"
+        type={type}
         placeholder={placeholder}
         value={value}
         onChange={(e) => setValue(e.target.value)}

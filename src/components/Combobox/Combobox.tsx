@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -15,25 +15,31 @@ import {
   PopoverContent,
   PopoverTrigger
 } from "@/components/ui/popover";
+import { toast } from "../ui/use-toast";
 
-const frameworks = [
+interface frameworksTypes {
+  value: boolean;
+  label: string;
+}
+
+const frameworks: frameworksTypes[] = [
   {
-    value: "open",
+    value: true,
     label: "Open"
   },
   {
-    value: "closed",
+    value: false,
     label: "Closed"
   }
 ];
 
 interface ComboboxDemoProps {
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string | "">>;
+  value: boolean;
+  setValue: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function ComboboxDemo({ value, setValue }: ComboboxDemoProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState<boolean>(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -47,7 +53,7 @@ export function ComboboxDemo({ value, setValue }: ComboboxDemoProps) {
             boxShadow: " 0px 1px 2px 0px #1018280D"
           }}
         >
-          {value
+          {value !== undefined
             ? frameworks.find((framework) => framework.value === value)?.label
             : "Restaurant status (open/close)"}
           <svg
@@ -75,10 +81,14 @@ export function ComboboxDemo({ value, setValue }: ComboboxDemoProps) {
               {frameworks.map((framework) => (
                 <CommandItem
                   className="w-full border-b border-black/30 py-3"
-                  key={framework.value}
-                  value={framework.value}
+                  key={framework.label}
+                  value={framework.value?.toString()}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    setValue(currentValue === "true" ? true : false);
+                    // toast({
+                    //   variant: "default",
+                    //   description: currentValue
+                    // });
                     setOpen(false);
                   }}
                 >
