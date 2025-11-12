@@ -18,14 +18,14 @@ const Header = () => {
   };
 
   return (
-    <section className="md:px-32 px-6 bg-[#FFB30E] relative overflow-hidden pb-20">
-      <div className="pt-10 flex items-center justify-between space-x-3">
+    <section className="xl:px-32 md:px-12 px-6 bg-[#FFB30E] relative overflow-hidden pb-20">
+      <div className="pt-10 flex items-center xl:justify-between justify-center space-x-3">
         <div className="space-y-4">
-          <h1 className="flex flex-col relative">
-            <span className="md:text-[88px] text-[40px] font-medium text-white">
+          <h1 className="flex flex-col xl:text-start text-center relative">
+            <span className="xl:text-[88px] md:text-[80px] text-[40px] font-medium text-white">
               Are you starving?
             </span>
-            <span className="text-white text-[22px] font-normal relative  -top-4">
+            <span className="text-white text-[22px] font-normal relative  xl:-top-4 top-0">
               Within a few clicks, find meals that are accessible near you
             </span>
           </h1>
@@ -90,7 +90,7 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="relative md:block hidden">
+        <div className="relative xl:block md:hidden hidden">
           <div
             className="h-[397.14px] w-[397.14px] overflow-hidden absolute -top-[110px] right-0 rounded-full"
             style={{

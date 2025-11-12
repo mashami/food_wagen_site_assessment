@@ -222,7 +222,7 @@ const AddProductDialog = ({
 
             <div className="flex md:flex-row justify-between gap-2 w-full">
               <Button
-                text={isLoading ? "Adding..." : "Add"}
+                text={isLoading ? "Add Food..." : "Add Food"}
                 type="submit"
                 disabled={isLoading}
                 className="text-white rounded-[12px] w-full"

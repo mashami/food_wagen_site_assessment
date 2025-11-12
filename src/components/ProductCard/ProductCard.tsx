@@ -151,7 +151,7 @@ function ProductCard({
                 : "bg-[#F1722833] text-[#F17228] hover:bg-[#F1722833]"
             )}
           >
-            {open == "true" || open == true ? "Open" : "Closed"}
+            {open == "true" || open == true ? "Open Now" : "Closed"}
           </p>
         </div>
       </div>
