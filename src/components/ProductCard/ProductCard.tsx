@@ -1,17 +1,16 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Dots, PriceIcon, StarIcon } from "../Icons/Icons";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { DeleteProductDialog, EditProductDialog } from "../Dialogs";
-import { getAllProducts, getProduct } from "@/services/products";
+import { getProduct } from "@/services/products";
 import { toast } from "../ui/use-toast";
 import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
@@ -50,8 +49,7 @@ function ProductCard({
   const avatorValidImage = restaurant_image?.startsWith("http")
     ? restaurant_image
     : "/avator.svg";
-  const { setIsLoading, isLoading } = useAppContext();
-  const router = useRouter();
+  const { setIsLoading, isLoading, refetchProducts } = useAppContext();
 
   const getproduct = async (id: string) => {
     try {
@@ -63,7 +61,7 @@ function ProductCard({
           description: response?.message || "Failed to delete product"
         });
         setIsLoading(false);
-        router.refresh();
+        refetchProducts();
         return;
       }
 
@@ -149,12 +147,12 @@ function ProductCard({
           <p
             className={cn(
               "font-bold text-[16px] rounded-[10px] px-5 py-1.5 w-fit",
-              open || "open"
+              open == "true" || open == true
                 ? "bg-[#79B93C33] text-[#79B93C] hover:bg-[#79B93C33]"
                 : "bg-[#F1722833] text-[#F17228] hover:bg-[#F1722833]"
             )}
           >
-            {open || "open" ? "Open" : "Closed"}
+            {open == "true" || open == true ? "Open" : "Closed"}
           </p>
         </div>
       </div>

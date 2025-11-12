@@ -24,7 +24,7 @@ const DeleteProductDialog = ({
   id,
   deleteProductDialoagOpen
 }: DeleteProductDialogProps) => {
-  const { isLoading, setIsLoading, refleshPageHandle } = useAppContext();
+  const { isLoading, setIsLoading, refetchProducts } = useAppContext();
   const router = useRouter();
 
   const handleDelete = async (e: React.FormEvent) => {
@@ -50,7 +50,7 @@ const DeleteProductDialog = ({
       });
       setIsLoading(false);
 
-      refleshPageHandle();
+      refetchProducts();
       setDeleteProductDialoagOpen(false);
       return;
     } catch (error) {

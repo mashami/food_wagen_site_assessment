@@ -9,10 +9,12 @@ import { toast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
 
 function ProductsWrapContent() {
   const [visibleCount, setVisibleCount] = useState<number>(8);
   const { products, isLoading } = useAppContext();
+  const router = useRouter();
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 8);
@@ -52,7 +54,15 @@ function ProductsWrapContent() {
         </div>
       ) : (
         <div className="flex items-center justify-center w-full py-5">
-          <p className="font-medium text-[20px]">There is no products yet</p>
+          <div className="space-y-1 grid place-content-center">
+            <p className="font-medium text-[20px]">There is no products yet</p>
+            <button
+              className="text-[#F17228] flex items-center justify-center text-center"
+              onClick={() => router.refresh()}
+            >
+              Try again
+            </button>
+          </div>
         </div>
       )}
 

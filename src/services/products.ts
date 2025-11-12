@@ -88,42 +88,6 @@ export const searchProducts = async (searchParam: string) => {
   return result.data
 }
 
-// export const updateProduct = async ({
-//   name,
-//   avatar,
-//   logo,
-//   createdAt,
-//   open,
-//   rating,
-//   restaurantName,
-//   id,
-// }: ProductUpdateTypes) => {
-//   const result = await fetch(`/api/updateProduct/${id}`, {
-//     method: 'PUT',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({
-//       name,
-//       avatar,
-//       createdAt,
-//       logo,
-//       open,
-//       rating,
-//       restaurantName,
-//     }),
-//   })
-
-//   const data = await result.json()
-
-//   if (!result.ok) {
-//     return NextResponse.json(
-//       { error: true, message: 'Failed to fetch data from MockAPI' },
-//       { status: HttpStatusCode.BAD_REQUEST },
-//     )
-//   }
-//   return data
-// }
-
-// services/updateProduct.ts
 export const updateProduct = async ({
   name,
   avatar,
