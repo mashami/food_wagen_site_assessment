@@ -13,7 +13,6 @@ import { DeleteProductDialog, EditProductDialog } from "../Dialogs";
 import { getProduct } from "@/services/products";
 import { toast } from "../ui/use-toast";
 import { useAppContext } from "@/context/AppContext";
-import { useRouter } from "next/navigation";
 import { ProductTypes } from "@/utils/types";
 
 interface ProductCardProps {
@@ -123,7 +122,7 @@ function ProductCard({
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-white">
               <DropdownMenuItem
-                className="cursor-pointer"
+                className="cursor-pointer select-none"
                 onClick={() => {
                   setEditOpen(true), getproduct(id);
                 }}
@@ -158,12 +157,12 @@ function ProductCard({
       </div>
       {product && (
         <EditProductDialog
-          avatar={product.avatar}
+          foodAvatar={product.avatar}
           id={product.id}
-          logo={product.logo}
-          name={product.name}
-          rating={product.rating}
-          open={product.open}
+          restaurant_logo={product.logo}
+          food_name={product.name}
+          food_rating={product.rating.toString()}
+          restaurant_status={product.open}
           restaurantName={product.restaurantName}
           editProductDialoagOpen={editOpen}
           setEditProductDialoagOpen={setEditOpen}

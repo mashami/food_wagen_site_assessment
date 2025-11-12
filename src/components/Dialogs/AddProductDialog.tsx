@@ -32,7 +32,7 @@ interface frameworksTypes {
 export const frameworks: frameworksTypes[] = [
   {
     value: "true",
-    label: "Open"
+    label: "Open Now"
   },
   {
     value: "false",
@@ -44,20 +44,31 @@ const AddProductDialog = ({
   SetaddProductDialoagOpen,
   addProductDialoagOpen
 }: AddProductDialogProps) => {
-  const [name, setName] = useState<string>("");
-  const [avatar, setAvatar] = useState<string>("");
-  const [logo, setLogo] = useState<string>("");
-  const [selected, setSelected] = useState<"true" | "false" | "">("");
-  const [rating, setRating] = useState<string>("");
-  const [restaurantName, setRestaurantName] = useState<string>("");
+  const [food_name, setFood_name] = useState<string>("");
+  const [foodAvatar, setFoodAvatar] = useState<string>("");
+  const [restaurant_logo, setRestaurant_logo] = useState<string>("");
+  const [restaurant_status, setRestaurant_status] = useState<
+    "true" | "false" | ""
+  >("");
+  const [food_rating, setFood_rating] = useState<string>("");
+  const [restaurant_name, setRestaurant_name] = useState<string>("");
   const { refetchProducts, isLoading, setIsLoading } = useAppContext();
-
   const createdAt = new Date().toISOString();
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selected) {
+    const food_ratingConvert = parseInt(food_rating);
+
+    if (!restaurant_logo.startsWith("http") || !foodAvatar.startsWith("http")) {
+      toast({
+        variant: "destructive",
+        description: "Valid Image provided"
+      });
+      return;
+    }
+
+    if (!restaurant_status) {
       toast({
         variant: "destructive",
         description: "Please select restaurant status."
@@ -65,7 +76,14 @@ const AddProductDialog = ({
       return;
     }
 
-    if (!avatar || !createdAt || !logo || !name || !rating || !restaurantName) {
+    if (
+      !foodAvatar ||
+      !createdAt ||
+      !restaurant_logo ||
+      !food_name ||
+      !food_ratingConvert ||
+      !restaurant_name
+    ) {
       toast({
         variant: "destructive",
         description: "All fields are required......"
@@ -80,13 +98,13 @@ const AddProductDialog = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          avatar,
+          avatar: foodAvatar,
           createdAt,
-          logo,
-          name,
-          open: selected,
-          rating,
-          restaurantName
+          logo: restaurant_logo,
+          name: food_name,
+          open: restaurant_status,
+          rating: food_ratingConvert,
+          restaurantName: restaurant_name
         })
       });
 
@@ -104,14 +122,14 @@ const AddProductDialog = ({
         description: "Product added successfully!"
       });
 
-      setName("");
-      setAvatar("");
-      setLogo("");
-      setRating("");
-      setRestaurantName("");
-      setSelected("");
-
+      setFood_name("");
+      setFoodAvatar("");
+      setRestaurant_logo("");
+      setFood_rating("");
+      setRestaurant_name("");
+      setRestaurant_status("");
       SetaddProductDialoagOpen(false);
+
       refetchProducts();
     } catch (error) {
       toast({
@@ -140,36 +158,37 @@ const AddProductDialog = ({
             className="space-y-6 flex flex-col justify-center items-center"
           >
             <TextInput
-              setValue={setName}
-              value={name}
+              setValue={setFood_name}
+              value={food_name}
               name="food_name"
               placeholder="Food name"
               required
             />
             <TextInput
-              setValue={setRating}
-              value={rating}
+              setValue={setFood_rating}
+              value={food_rating}
+              type="number"
               name="food_rating"
               placeholder="Food rating"
               required
             />
             <TextInput
-              setValue={setAvatar}
-              value={avatar}
+              setValue={setFoodAvatar}
+              value={foodAvatar}
               name="food_image"
               placeholder="Food image (link)"
               required
             />
             <TextInput
-              setValue={setRestaurantName}
-              value={restaurantName}
+              setValue={setRestaurant_name}
+              value={restaurant_name}
               name="restaurant_name"
               placeholder="Restaurant name"
               required
             />
             <TextInput
-              setValue={setLogo}
-              value={logo}
+              setValue={setRestaurant_logo}
+              value={restaurant_logo}
               name="restaurant_logo"
               placeholder="Restaurant logo (link)"
               required
@@ -177,7 +196,7 @@ const AddProductDialog = ({
 
             <Select
               onValueChange={(value: "true" | "false") => {
-                setSelected(value);
+                setRestaurant_status(value);
                 //   toast({
                 //     variant: "destructive",
                 //     description: value

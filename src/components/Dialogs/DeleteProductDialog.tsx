@@ -25,7 +25,6 @@ const DeleteProductDialog = ({
   deleteProductDialoagOpen
 }: DeleteProductDialogProps) => {
   const { isLoading, setIsLoading, refetchProducts } = useAppContext();
-  const router = useRouter();
 
   const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +39,7 @@ const DeleteProductDialog = ({
           description: result?.message || "Failed to delete product"
         });
         setIsLoading(false);
-        router.refresh();
+
         return;
       }
 
@@ -51,7 +50,7 @@ const DeleteProductDialog = ({
       setIsLoading(false);
 
       refetchProducts();
-      setDeleteProductDialoagOpen(false);
+      // setDeleteProductDialoagOpen(false);
       return;
     } catch (error) {
       // console.error("Delete error:", error);
@@ -60,10 +59,10 @@ const DeleteProductDialog = ({
         description: "An unexpected error occurred"
       });
       setIsLoading(false);
-      setDeleteProductDialoagOpen(false);
+      // setDeleteProductDialoagOpen(false);
     } finally {
       setIsLoading(false);
-      setDeleteProductDialoagOpen(false);
+      // setDeleteProductDialoagOpen(false);
     }
   };
 
