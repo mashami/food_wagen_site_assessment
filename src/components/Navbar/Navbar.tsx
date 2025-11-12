@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="md:px-32 px-6 py-4">
+      <nav className="xl:px-32 md:px-12 px-6 py-4">
         <div className="flex items-center place-content-between">
           <Logo />
 

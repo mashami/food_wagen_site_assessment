@@ -13,8 +13,7 @@ import { useRouter } from "next/navigation";
 
 function ProductsWrapContent() {
   const [visibleCount, setVisibleCount] = useState<number>(8);
-  const { products, isLoading } = useAppContext();
-  const router = useRouter();
+  const { products, isLoading, refetchProducts } = useAppContext();
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 8);
@@ -58,7 +57,7 @@ function ProductsWrapContent() {
             <p className="font-medium text-[20px]">There is no products yet</p>
             <button
               className="text-[#F17228] flex items-center justify-center text-center"
-              onClick={() => router.refresh()}
+              onClick={() => refetchProducts()}
             >
               Try again
             </button>

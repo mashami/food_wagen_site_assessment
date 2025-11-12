@@ -24,7 +24,7 @@ const Footer = () => {
   const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME || "Your Company";
 
   return (
-    <footer className="md:px-32 px-6 pt-16 bg-[#212121]">
+    <footer className="xl:px-32 md:px-12 px-6 pt-16 bg-[#212121]">
       <div className="flex md:flex-row flex-col md:space-x-6 space-x-0 md:space-y-0 space-y-5 justify-between">
         <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-2 gap-4 place-content-stretch">
           <List title="Company" list={Company_list} />

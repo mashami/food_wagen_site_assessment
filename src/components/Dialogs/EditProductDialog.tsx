@@ -208,7 +208,7 @@ const EditProductDialog = ({
 
             <div className="flex md:flex-row justify-between gap-2 w-full">
               <Button
-                text={isLoading ? "Edit...." : "Edit"}
+                text={isLoading ? "Edit Food...." : "Edit Food"}
                 type="submit"
                 className="text-white rounded-[12px] w-full"
                 style={{
