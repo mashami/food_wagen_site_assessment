@@ -1,9 +1,22 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { BagIcon, MotorIcon, SearchIcon } from "../Icons/Icons";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { searchProducts } from "@/services/products";
+import { useAppContext } from "@/context/AppContext";
+import { ProductTypes } from "@/utils/types";
 
 const Header = () => {
+  const [searchValue, setSearchValue] = useState<string>("");
+  const { setProducts } = useAppContext();
+
+  const handleSearch = async () => {
+    const results: ProductTypes[] = await searchProducts(searchValue);
+    setProducts(results);
+  };
+
   return (
     <section className="md:px-32 px-6 bg-[#FFB30E] relative overflow-hidden pb-20">
       <div className="pt-10 flex items-center justify-between space-x-3">
@@ -43,6 +56,8 @@ const Header = () => {
                 <SearchIcon />
                 <input
                   type="text"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="What do you like to eat today?"
                   className="placeholder:text-[#9E9E9E] text-[18px] outline-none w-full bg-[#F5F5F5]"
                 />
@@ -69,6 +84,7 @@ const Header = () => {
                     "linear-gradient(95.71deg, #FF7A7A -39.64%, #F75900 135.31%)"
                 }}
                 position="left"
+                onClick={() => handleSearch}
               />
             </form>
           </div>

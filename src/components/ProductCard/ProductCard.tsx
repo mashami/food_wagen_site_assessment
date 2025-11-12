@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dots, PriceIcon, StarIcon } from "../Icons/Icons";
 import { cn } from "@/lib/utils";
 import {
@@ -11,13 +11,18 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { DeleteProductDialog, EditProductDialog } from "../Dialogs";
+import { getAllProducts, getProduct } from "@/services/products";
+import { toast } from "../ui/use-toast";
+import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
+import { ProductTypes } from "@/utils/types";
 
 interface ProductCardProps {
   id: string;
   Price: string;
   food_name: string;
   food_image: string;
-  open: boolean;
+  open: boolean | string;
   food_rating: number;
   restaurant_image: string;
   restaurant_status: string;
@@ -37,6 +42,7 @@ function ProductCard({
 }: ProductCardProps) {
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [deletOpen, setDeleteOpen] = useState<boolean>(false);
+  const [product, setProduct] = useState<ProductTypes>();
   const foodValidImage = food_image?.startsWith("http")
     ? food_image
     : "/food.svg";
@@ -44,13 +50,44 @@ function ProductCard({
   const avatorValidImage = restaurant_image?.startsWith("http")
     ? restaurant_image
     : "/avator.svg";
+  const { setIsLoading, isLoading } = useAppContext();
+  const router = useRouter();
+
+  const getproduct = async (id: string) => {
+    try {
+      const response = await getProduct(id);
+
+      if (!response || response.error) {
+        toast({
+          variant: "destructive",
+          description: response?.message || "Failed to delete product"
+        });
+        setIsLoading(false);
+        router.refresh();
+        return;
+      }
+
+      const result = (await response.data) as ProductTypes;
+      setProduct(result);
+      return;
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "An unexpected error occurred"
+      });
+      setIsLoading(false);
+      return;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
       <div className="space-y-[30px] w-full">
         <div className="h-[250px] w-full overflow-hidden rounded-xl relative">
           <img
-            src={foodValidImage}
+            src={foodValidImage ? foodValidImage : "/Imagetest.png"}
             alt={food_name || "food"}
             className="w-full h-full object-cover rounded-xl"
           />
@@ -65,7 +102,7 @@ function ProductCard({
           <div className="flex space-x-2">
             <div className="h-[54px] w-[54px] overflow-hidden rounded-xl relative flex-shrink-0">
               <img
-                src={avatorValidImage}
+                src={avatorValidImage ? avatorValidImage : "/Imagetest.png"}
                 alt={food_name || "restaurant"}
                 className="w-full h-full object-cover rounded-xl"
               />
@@ -83,15 +120,17 @@ function ProductCard({
           </div>
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="select-none">
               <Dots />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-white">
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => setEditOpen(true)}
+                onClick={() => {
+                  setEditOpen(true), getproduct(id);
+                }}
               >
-                Edit
+                {isLoading ? "Editing..." : "Edit"}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -110,20 +149,28 @@ function ProductCard({
           <p
             className={cn(
               "font-bold text-[16px] rounded-[10px] px-5 py-1.5 w-fit",
-              open
+              open || "open"
                 ? "bg-[#79B93C33] text-[#79B93C] hover:bg-[#79B93C33]"
                 : "bg-[#F1722833] text-[#F17228] hover:bg-[#F1722833]"
             )}
           >
-            {open ? "Open" : "Close"}
+            {open || "open" ? "Open" : "Closed"}
           </p>
         </div>
       </div>
-      <EditProductDialog
-        editProductDialoagOpen={editOpen}
-        setEditProductDialoagOpen={setEditOpen}
-      />
-
+      {product && (
+        <EditProductDialog
+          avatar={product.avatar}
+          id={product.id}
+          logo={product.logo}
+          name={product.name}
+          rating={product.rating}
+          open={product.open}
+          restaurantName={product.restaurantName}
+          editProductDialoagOpen={editOpen}
+          setEditProductDialoagOpen={setEditOpen}
+        />
+      )}
       <DeleteProductDialog
         id={id}
         deleteProductDialoagOpen={deletOpen}

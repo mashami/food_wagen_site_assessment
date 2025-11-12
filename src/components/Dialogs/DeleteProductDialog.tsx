@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { deleteProduct } from "@/services/products";
 import { toast } from "../ui/use-toast";
 import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
 
 interface DeleteProductDialogProps {
   id: string;
@@ -23,34 +24,46 @@ const DeleteProductDialog = ({
   id,
   deleteProductDialoagOpen
 }: DeleteProductDialogProps) => {
-  const { isLoading, setIsLoading } = useAppContext();
+  const { isLoading, setIsLoading, refleshPageHandle } = useAppContext();
+  const router = useRouter();
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     setIsLoading(true);
-
     try {
       const result = await deleteProduct(id);
-      if (!result.ok) {
+
+      if (!result || result.error) {
         toast({
           variant: "destructive",
-          description: result.message || "Failed to add product"
+          description: result?.message || "Failed to delete product"
         });
         setIsLoading(false);
+        router.refresh();
         return;
       }
+
       toast({
         variant: "default",
-        description: result.message || "Delete successfully"
+        description: result.message || "Deleted successfully"
       });
       setIsLoading(false);
+
+      refleshPageHandle();
+      setDeleteProductDialoagOpen(false);
       return;
     } catch (error) {
+      // console.error("Delete error:", error);
       toast({
         variant: "destructive",
         description: "An unexpected error occurred"
       });
       setIsLoading(false);
-      return;
+      setDeleteProductDialoagOpen(false);
+    } finally {
+      setIsLoading(false);
+      setDeleteProductDialoagOpen(false);
     }
   };
 
@@ -66,7 +79,10 @@ const DeleteProductDialog = ({
           </DialogTitle>
 
           {/* <DialogDescription> */}
-          <div className="space-y-6 flex flex-col justify-center items-center">
+          <form
+            onSubmit={handleDelete}
+            className="space-y-6 flex flex-col justify-center items-center"
+          >
             <p className="text-[#9E9E9E] text-[15px]">
               Are you sure you want to delete this meal? Actions cannot be
               reversed.
@@ -74,6 +90,8 @@ const DeleteProductDialog = ({
             <div className="flex md:flex-row justify-between gap-2 w-full">
               <Button
                 text={isLoading ? "Deleting...." : "Yes"}
+                type="submit"
+                disabled={isLoading}
                 className="text-white rounded-[12px] w-full py-6"
                 style={{
                   background:
@@ -81,17 +99,18 @@ const DeleteProductDialog = ({
                   boxShadow:
                     "0px 20px 40px 0px #FFAE004A, 0px 5px 10px 0px #FFAE0042"
                 }}
-                onClick={() => handleDelete(id)}
               />
 
               <Button
                 text="Cancel"
                 variant={"ghost"}
+                type="reset"
+                disabled={isLoading}
                 className="text-black rounded-[12px] text-[10px] w-full border border-[#FFBA26] py-6"
                 onClick={() => setDeleteProductDialoagOpen(false)}
               />
             </div>
-          </div>
+          </form>
           {/* </DialogDescription> */}
         </DialogHeader>
       </DialogContent>

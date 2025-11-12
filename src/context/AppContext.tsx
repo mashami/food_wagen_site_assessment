@@ -2,6 +2,7 @@
 
 import { toast } from "@/components/ui/use-toast";
 import { ProductTypes } from "@/utils/types";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   Dispatch,
@@ -15,7 +16,8 @@ interface AppContextData {
   products: ProductTypes[] | [];
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
-  // resetUser: () => void
+  setProducts: Dispatch<SetStateAction<ProductTypes[] | []>>;
+  refleshPageHandle: () => void;
 }
 
 const AppContext = createContext<AppContextData | null>(null);
@@ -37,6 +39,7 @@ interface AppContextProviderProps {
 export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [products, setProducts] = useState<ProductTypes[] | []>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -72,10 +75,16 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     fetchProducts();
   }, []);
 
+  const refleshPageHandle = () => {
+    router.refresh();
+  };
+
   // console.log(userInfo)
 
   const value: AppContextData = {
     isLoading,
+    refleshPageHandle,
+    setProducts,
     setIsLoading,
     products
   };
