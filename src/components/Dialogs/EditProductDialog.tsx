@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { TextInput } from "../TextInput";
-import { ComboboxDemo } from "../Combobox/Combobox";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import {
@@ -26,11 +25,11 @@ interface EditProductDialogProps {
   setEditProductDialoagOpen: Dispatch<SetStateAction<boolean>>;
   editProductDialoagOpen: boolean;
   id: string;
-  name: string;
-  avatar: string;
-  logo: string;
-  open: boolean | string;
-  rating: number;
+  food_name: string;
+  foodAvatar: string;
+  restaurant_logo: string;
+  restaurant_status: boolean | string;
+  food_rating: string;
   restaurantName: string;
 }
 
@@ -38,19 +37,22 @@ const EditProductDialog = ({
   id,
   setEditProductDialoagOpen,
   editProductDialoagOpen,
-  name: names,
-  avatar: avatars,
-  logo: logos,
-  open: opens,
-  rating: ratings,
-  restaurantName: restaurant_name
+  food_name: name,
+  foodAvatar: avatar,
+  restaurant_logo: logo,
+  restaurant_status: open,
+  food_rating: rating,
+  restaurantName: restaurant_names
 }: EditProductDialogProps) => {
-  const [name, setName] = useState<string>(names);
-  const [avatar, setAvatar] = useState<string>(avatars);
-  const [logo, setLogo] = useState<string>(logos);
-  const [selected, setSelected] = useState<"true" | "false" | "">("");
-  const [rating, setRating] = useState<string>(ratings.toString());
-  const [restaurantName, setRestaurantName] = useState<string>(restaurant_name);
+  const [food_name, setFood_name] = useState<string>(name);
+  const [foodAvatar, setFoodAvatar] = useState<string>(avatar);
+  const [restaurant_logo, setRestaurant_logo] = useState<string>(logo);
+  const [restaurant_status, setRestaurant_status] = useState<boolean | string>(
+    open
+  );
+  const [food_rating, setFood_rating] = useState<string>(rating);
+  const [restaurant_name, setRestaurant_name] =
+    useState<string>(restaurant_names);
   const currentYear = new Date().toISOString();
   const { refetchProducts, isLoading, setIsLoading } = useAppContext();
 
@@ -59,7 +61,7 @@ const EditProductDialog = ({
     setIsLoading(true);
 
     try {
-      if (!selected) {
+      if (!restaurant_status) {
         toast({
           variant: "destructive",
           description: "Please select restaurant status."
@@ -69,12 +71,12 @@ const EditProductDialog = ({
       }
 
       if (
-        !avatar ||
+        !foodAvatar ||
         !currentYear ||
-        !logo ||
-        !name ||
-        !rating ||
-        !restaurantName
+        !restaurant_logo ||
+        !food_name ||
+        !food_rating ||
+        !restaurant_name
       ) {
         toast({
           variant: "destructive",
@@ -84,17 +86,17 @@ const EditProductDialog = ({
         return;
       }
 
-      const ratingConvert = parseInt(rating);
+      const ratingConvert = parseInt(food_rating);
 
       const response = await updateProduct({
         id,
-        avatar,
+        avatar: foodAvatar,
         createdAt: currentYear,
-        name,
-        open: selected,
+        name: food_name,
+        open: restaurant_status,
         rating: ratingConvert,
-        restaurantName,
-        logo
+        restaurantName: restaurant_name,
+        logo: restaurant_logo
       });
 
       if (!response.ok) {
@@ -111,8 +113,8 @@ const EditProductDialog = ({
         description: response.message || "Product updated successfully!"
       });
 
-      refetchProducts();
       setEditProductDialoagOpen(false);
+      refetchProducts();
     } catch (error) {
       toast({
         variant: "destructive",
@@ -137,21 +139,20 @@ const EditProductDialog = ({
 
           {/* <DialogDescription> */}
           <form
-            action=""
             onSubmit={handleEdit}
             className="space-y-6 flex flex-col justify-center items-center"
           >
             <TextInput
-              setValue={setName}
-              value={name}
+              setValue={setFood_name}
+              value={food_name}
               name="food_name"
               placeholder="Food name"
               label="Food name"
               required
             />
             <TextInput
-              setValue={setRating}
-              value={rating}
+              setValue={setFood_rating}
+              value={food_rating}
               type="number"
               name="food_rating"
               placeholder="Food rating"
@@ -159,24 +160,24 @@ const EditProductDialog = ({
               required
             />
             <TextInput
-              setValue={setAvatar}
-              value={avatar}
+              setValue={setFoodAvatar}
+              value={foodAvatar}
               name="food_name"
               placeholder="Food image (link)"
               label="Food image (link)"
               required
             />
             <TextInput
-              setValue={setRestaurantName}
-              value={restaurantName}
+              setValue={setRestaurant_name}
+              value={restaurant_name}
               name="restaurant_name"
               placeholder="Restaurant name"
               label="Restaurant name"
               required
             />
             <TextInput
-              setValue={setLogo}
-              value={logo}
+              setValue={setRestaurant_logo}
+              value={restaurant_logo}
               name="restaurant_logo"
               placeholder="Restaurant logo (link)"
               label="Restaurant logo (link)"
@@ -185,11 +186,7 @@ const EditProductDialog = ({
 
             <Select
               onValueChange={(value: "true" | "false") => {
-                setSelected(value);
-                //   toast({
-                //     variant: "destructive",
-                //     description: value
-                //   });
+                setRestaurant_status(value);
               }}
             >
               <SelectTrigger className="bg-[#F5F5F5] border w-full px-4 py-6 border-black/10 rounded-[6px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-orange-400 transition">
